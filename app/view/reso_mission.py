@@ -42,6 +42,9 @@ argumentos_search_data.add_argument('data_inicial', type=str)
 argumentos_search_data.add_argument('data_final', type=str)
 
 
+argumentos_pesquisa_ordem=reqparse.RequestParser()
+argumentos_pesquisa_ordem.add_argument('data_lancamento', type=str)
+
 
 
 #Pesquisar por Id
@@ -66,7 +69,7 @@ class MissionByDate(Resource):
     def get(self):
         try:
            data = argumentos_search_data.parse_args()
-           data_inicial = datetime.strptime(data['data_inicial'],'%Y-%m-%d')
+           data_inicial = datetime.strptime(data['data_inicial'] ,'%Y-%m-%d')
            data_final = datetime.strptime(data['data_final'],'%Y-%m-%d')
 
            missao=Missao.get_by_date(self,data_inicial, data_final)
@@ -79,6 +82,26 @@ class MissionByDate(Resource):
 
         except Exception as e:
             return jsonify({"error": str(e)})   
+
+class MissionByDesc(Resource):
+    def get(self):
+
+        try:
+           data = argumentos_search_data.parse_args()
+           data_inicial = datetime.strptime(data['data_inicial'] ,'%Y-%m-%d')
+           data_final = datetime.strptime(data['data_final'],'%Y-%m-%d')
+            
+           detalhes_missao=Missao.all_missions(self,data_inicial,data_final)
+           
+           if detalhes_missao:
+
+                return jsonify(detalhes_missao)
+           else:
+               return {"Message":"Missao nao encontrada"},404
+
+        except Exception as e:
+            return jsonify({"error": str(e)})   
+
 #Criar Missao
 class MissionCreate(Resource):
     def post(self):

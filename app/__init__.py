@@ -14,9 +14,11 @@ from app.models.mission import Missao
 with app.app_context():
     db.create_all()
 
-from app.view.reso_mission import  MissionCreate, MissionUpdate, MissionDelete,MissionById, MissionByDate
+from app.view.reso_mission import  MissionCreate, MissionUpdate, MissionDelete,MissionById, MissionByDate,MissionByDesc
 api.add_resource(MissionCreate, '/create')
 api.add_resource(MissionUpdate, '/update')
 api.add_resource(MissionDelete, '/delete')
-api.add_resource(MissionById,  '/by_id')
-api.add_resource(MissionByDate, '/by_date')
+api.add_resource(MissionById,  '/id')
+api.add_resource(MissionByDate, '/date')
+api.add_resource(MissionByDesc, '/all')
+

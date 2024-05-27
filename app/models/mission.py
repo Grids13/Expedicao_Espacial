@@ -1,12 +1,13 @@
-from sqlalchemy import and_
+from sqlalchemy import and_,desc
 from app import db
+
 
 class Missao(db.Model):
     __tablename__ = 'mission'
     __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100))
-    data_lancamento = db.Column(db.DateTime)
+    data_lancamento = db.Column(db.Date)
     destino = db.Column(db.String(100))
     estado = db.Column(db.String(100))
     tripulacao = db.Column(db.String(200))
@@ -92,5 +93,17 @@ class Missao(db.Model):
         
         except Exception as e:
             print(e)
-    
+
+    def  all_missions(self,data_inicial,data_final):
+         try:
+             mission = db.session.query(Missao).filter((Missao.data_lancamento>=data_inicial) & (Missao.data_lancamento<=data_final)).order_by(Missao.data_lancamento.desc()).all()
+             mission_detail = [{'nome':missions.nome,
+                               'data_lancamento':missions.data_lancamento,
+                               'status':missions.status,
+                               'destino':missions.destino}for missions in mission]
+             
+             return mission_detail
+         
+         except Exception as e:
+             return {"error": str(e)}
     
