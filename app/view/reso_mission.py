@@ -42,8 +42,6 @@ argumentos_search_data.add_argument('data_inicial', type=str)
 argumentos_search_data.add_argument('data_final', type=str)
 
 
-argumentos_pesquisa_ordem=reqparse.RequestParser()
-argumentos_pesquisa_ordem.add_argument('data_lancamento', type=str)
 
 
 
