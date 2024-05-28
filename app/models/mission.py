@@ -43,12 +43,12 @@ class Missao(db.Model):
     def update_mission(self, id, nome, data_lancamento, destino, estado, tripulacao, carga_util, duracao, custo, status):
         try:
             db.session.query(Missao).filter(Missao.id==id).update({"nome":nome,
-                                                                   "data_lancamento":data_lancamento,
+                                                                   "data_lancamento":data_lancamento.strftime("%Y-%m-%d"),
                                                                    "destino":destino,
                                                                    "estado":estado,
                                                                    "tripulacao":tripulacao,
                                                                    "carga_util":carga_util,
-                                                                   "duracao":duracao,
+                                                                   "duracao":duracao.strftime("%Y-%m-%d %H:%M:%S"),
                                                                    "custo":custo,
                                                                    "status":status})
             db.session.commit()
@@ -69,12 +69,12 @@ class Missao(db.Model):
           mission = db.session.query(Missao).filter(Missao.id == mission_id).all()
           mission_detail = [{'id': missions.id, 
                               'nome':missions.nome, 
-                              'data_lancamento':missions.data_lancamento, 
+                              'data_lancamento':missions.data_lancamento.strftime("%Y-%m-%d"), 
                               'destino':missions.destino,
                               'estado':missions.estado, 
                               'tripulacao':missions.tripulacao, 
                               'carga_util':missions.carga_util, 
-                              'duracao':missions.duracao,
+                              'duracao':missions.duracao.strftime("%Y-%m-%d %H:%M:%S"),
                               'custo':missions.custo,
                               'status': missions.status}for missions in mission]
           return mission_detail
@@ -86,20 +86,21 @@ class Missao(db.Model):
         try:
             mission = db.session.query(Missao).filter(and_(Missao.data_lancamento >= data_inicial , Missao.data_lancamento <= data_final)).all()
             mission_detail = [{'nome':missions.nome,
-                               'data_lancamento':missions.data_lancamento,
-                               'status':missions.status}for missions in mission]
+                               'data_lancamento':missions.data_lancamento.strftime("%Y-%m-%d"),
+                               'estado':missions.estado,
+                               'destino':missions.destino}for missions in mission]
             return mission_detail
             
         
         except Exception as e:
             print(e)
 
-    def  all_missions(self,data_inicial,data_final):
+    def  all_missions(self):
          try:
-             mission = db.session.query(Missao).filter((Missao.data_lancamento>=data_inicial) & (Missao.data_lancamento<=data_final)).order_by(Missao.data_lancamento.desc()).all()
+             mission = db.session.query(Missao).order_by(Missao.data_lancamento.desc()).all
              mission_detail = [{'nome':missions.nome,
-                               'data_lancamento':missions.data_lancamento,
-                               'status':missions.status,
+                               'data_lancamento':missions.data_lancamento.strftime("%Y-%m-%d"),
+                               'estado':missions.estado,
                                'destino':missions.destino}for missions in mission]
              
              return mission_detail

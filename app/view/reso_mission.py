@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify,request,make_response
 from flask_restful import Resource, reqparse
 from app.models.mission import Missao
 from datetime import datetime
@@ -47,59 +47,38 @@ argumentos_search_data.add_argument('data_final', type=str)
 
 #Pesquisar por Id
 class MissionById(Resource):
-    def get(self):
+    def get(self,id):
         try:
-           data = argumentos_search_id.parse_args()
-           if 'id' not in data or not data['id']:
-                return {"message": "O parametro Id  e necessario"}
-
-           missao=Missao.get_by_id(self,data['id'])
+          missao=Missao.get_by_id(self,id)
            
-           if missao:
-                return jsonify(missao)
-           else:
-                return {"message": "Missao nao encontrada"}
+          if missao:
+                return make_response(jsonify({"Missao":missao}),200)
+          else:
+                return make_response(jsonify({"message": "Missao nao encontrada"}),404)
         
         except Exception as e:
-            return jsonify({"error": str(e)})
+            return make_response(jsonify({"error": str(e)}), 500)
 
-class MissionByDate(Resource):
-    def get(self):
-        try:
-           data = argumentos_search_data.parse_args()
-           data_inicial = datetime.strptime(data['data_inicial'] ,'%Y-%m-%d')
-           data_final = datetime.strptime(data['data_final'],'%Y-%m-%d')
 
-           missao=Missao.get_by_date(self,data_inicial, data_final)
-           
-           if missao:
-               return jsonify(missao)
-           
-           else:
-               return {"Message":"Missao nao encontrada"},404
-
-        except Exception as e:
-            return jsonify({"error": str(e)})   
 
 class MissionByDesc(Resource):
     def get(self):
 
         try:
-           data = argumentos_search_data.parse_args()
-           data_inicial = datetime.strptime(data['data_inicial'] ,'%Y-%m-%d')
-           data_final = datetime.strptime(data['data_final'],'%Y-%m-%d')
+            data_inicial = request.args.get("data_inicial")
+            data_final = request.args.get("data_final")
             
-           detalhes_missao=Missao.all_missions(self,data_inicial,data_final)
-           
-           if detalhes_missao:
-
-                return jsonify(detalhes_missao)
-           else:
-               return {"Message":"Missao nao encontrada"},404
+            if data_inicial is None or data_final is None:
+                detalhes_missao = Missao.all_missions(self)
+            else:
+                data_inicial = datetime.strptime(data_inicial, "%Y-%m-%d")
+                data_final = datetime.strptime(data_final, "%Y-%m-%d")
+                detalhes_missao = Missao.get_by_date(self, data_inicial, data_final) or []
+            
+            return make_response(jsonify({"Missao":detalhes_missao}),200)
 
         except Exception as e:
-            return jsonify({"error": str(e)})   
-
+            return make_response(jsonify({"error": str(e)}),500)
 #Criar Missao
 class MissionCreate(Resource):
     def post(self):
@@ -119,13 +98,10 @@ class MissionCreate(Resource):
                                 data['custo'], 
                                 data['status'])
 
-            return jsonify( {"message": 'Missão criada com sucesso!'})
+            return make_response(jsonify( {"message": 'Missão criada com sucesso!'}),201)
 
         except Exception as e:
-            return jsonify({"error": str(e)})
-
-
-
+            return make_response(jsonify({"error": str(e)}),500)
 
 #Editar missao 
 class MissionUpdate(Resource):
@@ -148,10 +124,10 @@ class MissionUpdate(Resource):
                                     data['status']
                                     )
 
-            return {"message": 'Missão atualizada com sucesso!'}
+            return make_response(jsonify({"message": 'Missão atualizada com sucesso!'}),200)
         
         except Exception as e:
-            return jsonify({"error": str(e)})
+            return make_response(jsonify({"error": str(e)}),500)
 
  #Deletar Missao    
 class MissionDelete(Resource):
@@ -160,11 +136,10 @@ class MissionDelete(Resource):
            data = argumentos_delete.parse_args()
            Missao.delete_mission(self,data['id'])
            
-           return {"message": 'Missão deletada com sucesso!'}
-           
+           return make_response(jsonify({"message": 'Missão deletada com sucesso!'}),200)
         
         except Exception as e:
-            return jsonify({"error": str(e)})
+            return make_response(jsonify({"error": str(e)}),500)
 
 
 

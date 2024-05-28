@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        td {
+            vertical-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="d-flex justify-content-between p-4">
+            <div></div>
+            <h1>Sistema Espacial</h1>
+            <div class="">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#registerModal">Cadastrar</button>
+            </div>
+        </div>
+
+        <div class="filters p-4 card">
+            <div class="row g-2">
+                <div class="form-floating col-2">
+                    <input type="date" class="form-control" id="initialDate" placeholder="Data inicial">
+                    <label for="initialDate">Data Inicial</label>
+                </div>
+                <div class="form-floating col-2">
+                    <input type="date" class="form-control" id="finalDate" placeholder="Data final" disabled>
+                    <label for="finalDate">Data Final</label>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <div>
+                    <button type="button" class="btn btn-info text-white" id="btnPesquisar">Pesquisar</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card p-4 mt-2 table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID da Missão</th>
+                        <th>Nome da Missão</th>
+                        <th>Data de Lançamento</th>
+                        <th>Destino</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tBodyMissions">
+                </tbody>
+            </table>
+            <div id="info"></div>
+        </div>
+    </div>
+
+
+    <!-- Register Mission Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Cadastrar Missão</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" id="formRegister">
+                        <div class="row g-2 mb-2">
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="missionName" placeholder="Nome" value="Missão Marte 4">
+                                <label for="missionName">Nome</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="date" class="form-control" id="missionLaunchDate"
+                                    placeholder="Data lançamento" value="2024-05-01">
+                                <label for="missionLaunchDate">Data Lançamento</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="missionDestination" placeholder="Destino" value="Vênus">
+                                <label for="missionDestination">Destino</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="missionStatus" placeholder="Estado" value="Ativado" >
+                                <label for="missionStatus">Estado</label>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="missionCrew" placeholder="Tripulação" value="Luiz, Yngrid">
+                                <label for="missionCrew">Tripulação</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="missionPayload" placeholder="Carga util" value="Equipamento">
+                                <label for="missionPayload">Carga util</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="datetime" class="form-control" id="missionDuration" placeholder="Duração" value="2025-11-23 20:30">
+                                <label for="missionDuration">Duração</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="number" class="form-control" id="missionCost" placeholder="Custo"value="100000000" >
+                                <label for="missionCost">Custo</label>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="missionStatusDescription"
+                                    placeholder="Status" value="A missão Vênus 1 tem como objetivo explorar a superfície do planeta vênus em busca de sinais de vida passada.">
+                                <label for="missionStatusDescription">Status</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseRegisterModal" >Fechar</button>
+                    <button type="button" class="btn btn-primary" id="btnRegisterMission">Cadastrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Editar Mission Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Editar Missão</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" id="formEdit">
+                        <input type="number" hidden id="editMissionId">
+                        <div class="row g-2 mb-2">
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="editMissionName" placeholder="Nome" value="Missão Marte 4">
+                                <label for="editMissionName">Nome</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="date" class="form-control" id="editMissionLaunchDate"
+                                    placeholder="Data lançamento" value="2024-05-01">
+                                <label for="editMissionLaunchDate">Data Lançamento</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="editMissionDestination" placeholder="Destino" value="Vênus">
+                                <label for="editMissionDestination">Destino</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="editMissionStatus" placeholder="Estado" value="Ativado" >
+                                <label for="editMissionStatus">Estado</label>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="editMissionCrew" placeholder="Tripulação" value="Luiz, Yngrid">
+                                <label for="editMissionCrew">Tripulação</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="editMissionPayload" placeholder="Carga util" value="Equipamento">
+                                <label for="editMissionPayload">Carga util</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="datetime" class="form-control" id="editMissionDuration" placeholder="Duração" value="2025-11-23 20:30">
+                                <label for="editMissionDuration">Duração</label>
+                            </div>
+                            <div class="form-floating col">
+                                <input type="number" class="form-control" id="editMissionCost" placeholder="Custo"value="100000000" >
+                                <label for="editMissionCost">Custo</label>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                            <div class="form-floating col">
+                                <input type="text" class="form-control" id="editMissionStatusDescription"
+                                    placeholder="Status" value="A missão Vênus 1 tem como objetivo explorar a superfície do planeta vênus em busca de sinais de vida passada.">
+                                <label for="editMissionStatusDescription">Status</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseEditModal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="btnEditMission">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./scripts.js"></script>
+</body>
+</html>
